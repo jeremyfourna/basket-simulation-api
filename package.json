@@ -6,14 +6,16 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "basket-simulation-champ": "0.0.3",
+    "basket-simulation-club": "0.0.3",
     "body-parser": "~1.18.2",
     "bunyan": "^1.8.12",
     "compression": "^1.7.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "mongodb": "^2.2.33",
     "morgan": "~1.9.0",
-    "pug": "^2.0.0-rc.4",
     "serve-favicon": "~2.4.5"
   }
 }
