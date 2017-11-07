@@ -8,8 +8,7 @@ const champ = db.get('championships');
 
 
 router.get('/:id', (req, res, next) => {
-  champ.findOne(monk.id(req.params.id)).then((championships) => {
-    console.log(championships);
+  champ.findOne({ _id: req.params.id }).then((championships) => {
     res.json(championships);
   });
 });
