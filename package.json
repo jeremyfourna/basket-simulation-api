@@ -6,8 +6,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "basket-simulation-champ": "0.0.3",
-    "basket-simulation-club": "0.0.3",
+    "basket-simulation-champ": "0.0.5",
+    "basket-simulation-club": "0.0.5",
     "body-parser": "~1.18.2",
     "bunyan": "^1.8.12",
     "compression": "^1.7.1",
@@ -18,6 +18,7 @@
     "monk": "^6.0.5",
     "morgan": "~1.9.0",
     "pug": "^2.0.0-rc.4",
+    "ramda": "^0.25.0",
     "serve-favicon": "~2.4.5"
   }
 }
