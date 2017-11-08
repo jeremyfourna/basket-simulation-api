@@ -16,13 +16,24 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.post('/', (req, res) => {
+  function createClubForChamp(clubsList, champId, callback) {
+    const newClubs = R.map(R.assoc('champId', champId), clubsList);
+    clubs.insert(newClubs).then(createdClubs => {
+      return callback(champId, createdClubs);
+    });
+  }
+
+  function updateChampWithClubsId(champId, clubsId) {
+    champs.update(champId, { clubs: clubsId });
+    return champId;
+  }
+
   const params = R.prop('body', req);
   const newChampionship = generateChampionship(R.prop('style', params), R.prop('level', params), R.prop('nbClubs', params));
 
-  clubs.insert(R.tail(newChampionship)).then(createdClubs => {
-    champs.insert(R.assoc('clubs', createdClubs, R.head(newChampionship))).then(createdChamp => {
-      res.status(201).json({ _id: createdChamp });
-    });
+  champs.insert(R.head(newChampionship)).then(createdChamp => {
+    res.status(201).json({ _id: R.prop('_id', createdChamp) });
+    createClubForChamp(R.tail(newChampionship), createdChamp, updateChampWithClubsId);
   });
 });
 
