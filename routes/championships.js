@@ -18,22 +18,27 @@ router.get('/:id', (req, res, next) => {
 router.post('/', (req, res) => {
   function createClubForChamp(clubsList, champId, callback) {
     const newClubs = R.map(R.assoc('champId', champId), clubsList);
+
     clubs.insert(newClubs).then(createdClubs => {
-      return callback(champId, createdClubs);
+      const clubsId = R.map(R.prop('_id'), createdClubs);
+      return callback(champId, clubsId);
     });
   }
 
   function updateChampWithClubsId(champId, clubsId) {
-    champs.update(champId, { clubs: clubsId });
+    champs.update(champId, { $set: { clubs: clubsId } });
     return champId;
   }
 
   const params = R.prop('body', req);
   const newChampionship = generateChampionship(R.prop('style', params), R.prop('level', params), R.prop('nbClubs', params));
-
+  //console.log(params, newChampionship);
   champs.insert(R.head(newChampionship)).then(createdChamp => {
-    res.status(201).json({ _id: R.prop('_id', createdChamp) });
-    createClubForChamp(R.tail(newChampionship), createdChamp, updateChampWithClubsId);
+    const champId = R.prop('_id', createdChamp);
+    // Response to the API call
+    res.status(201).json({ _id: champId });
+    // Create the club for the championship
+    createClubForChamp(R.last(newChampionship), champId, updateChampWithClubsId);
   });
 });
 
