@@ -4,6 +4,7 @@ const router = express.Router();
 const { generateChampionship } = require('basket-simulation-champ');
 const monk = require('monk');
 const db = monk('localhost:27017/test');
+const { isValidId } = require('./utils');
 
 const champs = db.get('championships');
 const clubs = db.get('clubs');
@@ -12,10 +13,20 @@ const clubs = db.get('clubs');
 router.get('/:id', (req, res, next) => {
   // Retrieve the championship Id from the request
   const champId = R.path(['params', 'id'], req);
+  // Validation
+  const validChampId = isValidId(champId);
 
-  champs.findOne({ _id: champId }).then(championship => {
-    res.json(championship);
-  });
+  if (R.equals(validChampId, true)) {
+    champs.findOne({ _id: champId }).then(championship => {
+      if (R.equals(R.isNil(championship), true)) {
+        res.sendStatus(204);
+      } else {
+        res.json(championship);
+      }
+    });
+  } else {
+    res.status(400).json({ message: 'Champ id must have a length of 24.' });
+  }
 });
 
 router.post('/', (req, res) => {
