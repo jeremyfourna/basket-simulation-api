@@ -1,3 +1,14 @@
+const R = require('ramda');
+const Ajv = require('ajv');
+const ajv = new Ajv({ allErrors: true });
+
+// validateRequest object object -> array
+function validateRequest(schema, params) {
+  const schemaValidator = ajv.compile(schema);
+
+  return [schemaValidator(params), R.prop('errors', schemaValidator)];
+}
+
 const postChampionshipSchema = {
   title: 'Params to create a championship v1',
   type: 'object',
@@ -31,5 +42,6 @@ const getOneChampionshipSchema = {
   required: ['_id']
 };
 
+exports.validateRequest = R.curry(validateRequest);
 exports.postChampionshipSchema = postChampionshipSchema;
 exports.getOneChampionshipSchema = getOneChampionshipSchema;

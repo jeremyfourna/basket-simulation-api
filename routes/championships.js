@@ -1,17 +1,18 @@
 const R = require('ramda');
-const Ajv = require('ajv');
-const ajv = new Ajv({ allErrors: true });
 const express = require('express');
 const router = express.Router();
 const { generateChampionship } = require('basket-simulation-champ');
 const monk = require('monk');
 const db = monk('localhost:27017/test');
 const {
-  findOneFromCollection,
+  findOne,
   badArguments,
-  insertOneInCollection
-} = require('./utils');
+  insertOneInCollection,
+  respondToGETCall,
+  paramsForGETCall
+} = require('./db-mgmt');
 const {
+  validateRequest,
   postChampionshipSchema,
   getOneChampionshipSchema
 } = require('./schemas');
@@ -22,14 +23,19 @@ const clubs = db.get('clubs');
 
 ///// GET 1 championship ///////////////////////////////////////////////////////////////
 
-// Function to validate the request params
-const validateGetChamp = ajv.compile(getOneChampionshipSchema);
+function getOneChampionship(request, response, next) {
+  const params = paramsForGETCall(['_id'], request);
+  const isRequestValid = validateRequest(getOneChampionshipSchema, params);
+
+  return R.ifElse(
+    R.equals(true),
+    () => findOne(champs, params, respondToGETCall(response)),
+    () => badArguments(response, R.last(isRequestValid))
+  )(R.head(isRequestValid));
+}
+
 // Retrieve a given championship
-router.get('/:_id', findOneFromCollection(
-  ['_id'],
-  validateGetChamp,
-  champs
-));
+router.get('/:_id', getOneChampionship);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 

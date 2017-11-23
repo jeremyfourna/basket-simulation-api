@@ -4,7 +4,7 @@ const router = express.Router();
 const { generateClub } = require('basket-simulation-club');
 const monk = require('monk');
 const db = monk('localhost:27017/test');
-const { isValidId } = require('./utils');
+const { isValidId } = require('./db-mgmt');
 
 const clubs = db.get('clubs');
 

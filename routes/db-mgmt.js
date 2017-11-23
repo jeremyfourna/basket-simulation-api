@@ -1,32 +1,11 @@
 const R = require('ramda');
 
-function findOne(collection, query, response) {
-  function resultForFind(result) {
-    return R.ifElse(
-      R.equals(true),
-      () => response.sendStatus(204),
-      () => response.json(result)
-    )(R.isNil(result));
-  }
-  return collection.findOne(query).then(resultForFind);
+function findOne(collection, query, callback) {
+  return collection.findOne(query).then(callback);
 }
 
-function badArguments(message, response) {
+function badArguments(response, message) {
   return response.status(400).json({ message });
-}
-
-
-function findOneFromCollection(paramsToRetrieve, validation, collection, request, response, next) {
-  // Retrieve the championship Id from the request
-  const data = R.pickAll(paramsToRetrieve, R.prop('params', request));
-  // Validation
-  const isDataValid = validation(data);
-
-  return R.ifElse(
-    R.equals(true),
-    () => findOne(collection, data, response),
-    () => badArguments(R.prop('errors', validation), response)
-  )(isDataValid);
 }
 
 function insertOneInCollection(response, collection, data, callbacks) {
@@ -69,6 +48,21 @@ function callbackShouldContinue(callbacks, data) {
   )(R.length(callbacks));
 }
 
-exports.findOneFromCollection = R.curry(findOneFromCollection);
+function respondToGETCall(response, result) {
+  return R.ifElse(
+    R.equals(true),
+    () => response.sendStatus(204),
+    () => response.json(result)
+  )(R.isNil(result));
+}
+
+// paramsForGETCall array object -> object
+function paramsForGETCall(paramsToRetrieve, request) {
+  return R.pickAll(paramsToRetrieve, R.prop('params', request));
+}
+
+exports.paramsForGETCall = R.curry(paramsForGETCall);
+exports.respondToGETCall = R.curry(respondToGETCall);
+exports.findOne = R.curry(findOne);
 exports.insertOneInCollection = R.curry(insertOneInCollection);
 exports.badArguments = R.curry(badArguments);
