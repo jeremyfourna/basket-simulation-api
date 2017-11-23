@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "ajv": "^5.4.0",
     "basket-simulation-champ": "0.0.5",
     "basket-simulation-club": "0.0.5",
     "body-parser": "~1.18.2",
