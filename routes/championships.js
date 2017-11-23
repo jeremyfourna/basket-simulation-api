@@ -6,30 +6,20 @@ const monk = require('monk');
 const db = monk('localhost:27017/test');
 const {
   isValidId,
-  findOne,
-  badArguments
+  findOneFromCollection
 } = require('./utils');
 
 const champs = db.get('championships');
 const clubs = db.get('clubs');
 
 
-function getOneChampionship(request, response, next) {
-  // Retrieve the championship Id from the request
-  const champId = R.path(['params', 'id'], request);
-  // Validation
-  const validChampId = isValidId(champId);
+router.get('/:_id', findOneFromCollection(
+  ['_id'],
+  isValidId,
+  'Champ id must have a length of 24.',
+  champs
+));
 
-  R.ifElse(
-    R.equals(true),
-    () => findOne(champs, { _id: champId }, response),
-    () => badArguments('Champ id must have a length of 24.', response)
-  )(validChampId);
-}
-
-
-
-router.get('/:id', getOneChampionship);
 
 router.post('/', (req, res) => {
   function createClubForChamp(clubsList, champId, callback) {
