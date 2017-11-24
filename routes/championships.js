@@ -6,11 +6,13 @@ const monk = require('monk');
 const db = monk('localhost:27017/test');
 const {
   findOne,
-  badArguments,
   insertOneInCollection,
+} = require('./db-mgmt');
+const {
+  badArguments,
   respondToGETCall,
   paramsForGETCall
-} = require('./db-mgmt');
+} = require('./utils');
 const {
   validateRequest,
   postChampionshipSchema,
