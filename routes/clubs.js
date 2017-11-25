@@ -4,28 +4,36 @@ const router = express.Router();
 const { generateClub } = require('basket-simulation-club');
 const monk = require('monk');
 const db = monk('localhost:27017/test');
-const { isValidId } = require('./db-mgmt');
+const {
+  findOne
+} = require('./db-mgmt');
+const {
+  badArguments,
+  paramsForGETCall,
+  respondToGETCall
+} = require('./utils');
+const {
+  getOneClubSchema,
+  validateRequest
+} = require('./schemas');
 
 const clubs = db.get('clubs');
 
 
-router.get('/:id', (req, res, next) => {
-  // Retrieve the club Id from the request
-  const clubId = R.path(['params', 'id'], req);
-  // Validation
-  const validClubId = isValidId(clubId);
+///// GET 1 club ///////////////////////////////////////////////////////////////////////
 
-  if (R.equals(validClubId, true)) {
-    clubs.findOne({ _id: clubId }).then(club => {
-      if (R.equals(R.isNil(club), true)) {
-        res.sendStatus(204);
-      } else {
-        res.json(club);
-      }
-    });
-  } else {
-    res.status(400).json({ message: 'Club id must have a length of 24.' });
-  }
-});
+// getOneClub io io io -> io
+function getOneClub(request, response, next) {
+  const params = paramsForGETCall(['_id'], request);
+  const isRequestValid = validateRequest(getOneClubSchema, params);
+
+  return R.ifElse(
+    R.equals(true),
+    () => findOne(clubs, params, respondToGETCall(response)),
+    () => badArguments(response, R.last(isRequestValid))
+  )(R.head(isRequestValid));
+}
+
+router.get('/:_id', getOneClub);
 
 module.exports = router;

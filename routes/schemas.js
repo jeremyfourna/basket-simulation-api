@@ -42,6 +42,20 @@ const getOneChampionshipSchema = {
   required: ['_id']
 };
 
+const getOneClubSchema = {
+  title: 'Params to retrieve a club v1',
+  type: 'object',
+  properties: {
+    _id: {
+      type: 'string',
+      minLength: 24,
+      maxLength: 24
+    }
+  },
+  required: ['_id']
+};
+
 exports.validateRequest = R.curry(validateRequest);
 exports.postChampionshipSchema = postChampionshipSchema;
 exports.getOneChampionshipSchema = getOneChampionshipSchema;
+exports.getOneClubSchema = getOneClubSchema;

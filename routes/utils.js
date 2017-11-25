@@ -10,7 +10,7 @@ function respondToGETCall(response, result) {
   return R.ifElse(
     R.equals(true),
     () => response.sendStatus(204),
-    () => response.json(result)
+    () => response.status(200).json(result)
   )(R.isNil(result));
 }
 
