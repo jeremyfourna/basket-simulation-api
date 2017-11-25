@@ -1,7 +1,7 @@
 const R = require('ramda');
 const express = require('express');
 const router = express.Router();
-const { generateClub } = require('basket-simulation-club');
+//const { generateClub } = require('basket-simulation-club');
 const monk = require('monk');
 const db = monk('localhost:27017/test');
 const {
@@ -23,7 +23,7 @@ const clubs = db.get('clubs');
 ///// GET 1 club ///////////////////////////////////////////////////////////////////////
 
 // getOneClub io io io -> io
-function getOneClub(request, response, next) {
+function getOneClub(request, response) {
   const params = paramsForGETCall(['_id'], request);
   const isRequestValid = validateRequest(getOneClubSchema, params);
 

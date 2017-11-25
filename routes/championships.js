@@ -29,7 +29,7 @@ const clubs = db.get('clubs');
 ///// GET 1 championship ///////////////////////////////////////////////////////////////
 
 // getOneChampionship io io io -> io
-function getOneChampionship(request, response, next) {
+function getOneChampionship(request, response) {
   const params = paramsForGETCall(['_id'], request);
   const isRequestValid = validateRequest(getOneChampionshipSchema, params);
 
