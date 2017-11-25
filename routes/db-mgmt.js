@@ -11,8 +11,12 @@ function insert(collection, data, callback) {
 }
 
 // updateOne object object object function -> function
-function updateOne(collection, query, data, callback) {
-  return collection.update(query, data).then(callback);
+function updateOne(collection, query, data, callback = undefined) {
+  return R.ifElse(
+    R.equals(true),
+    () => collection.update(query, data),
+    () => collection.update(query, data).then(callback)
+  )(R.isNil(callback));
 }
 
 exports.findOne = R.curry(findOne);

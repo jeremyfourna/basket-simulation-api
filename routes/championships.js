@@ -47,29 +47,6 @@ router.get('/:_id', getOneChampionship);
 
 ///// POST a new championship //////////////////////////////////////////////////////////
 
-
-
-function updateChampWithClubsId(champId, clubsId) {
-  // After creating the clubs, link them inside the championship
-  champs.update(champId, { $set: { clubs: clubsId } });
-  return champId;
-}
-
-
-function postManyClubsForChamp(clubsList, champId) {
-  //console.log(clubsList, champId, callback);
-  // Add championship Id inside each club
-  /*const newClubs = R.map(R.assoc('champId', champId), clubsList);
-  // Insert the clubs inside the DB
-  clubs.insert(newClubs).then(createdClubs => {
-    // Retrieve the clubs Id after the insert
-    const clubsId = R.map(R.prop('_id'), createdClubs);
-    // Call the callback to update the championship
-    // with the clubs id
-    return callback(champId, clubsId);
-  });*/
-}
-
 // postOneChampionship io io io -> io
 function postOneChampionship(request, response) {
   function createChampionship(params) {
@@ -81,23 +58,38 @@ function postOneChampionship(request, response) {
     );
     const championship = R.head(newChampionship);
     const clubsInsideChamp = R.last(newChampionship);
-
     const postManyClubsForChampC = R.curry(postManyClubsForChamp);
 
     return insert(
       champs,
       championship,
-      respondToPOSTCall(
-        response,
-        R.__,
-        postManyClubsForChampC(clubsInsideChamp)
-      )
-    )
+      postManyClubsForChampC(response, clubsInsideChamp)
+    );
+  }
+
+  function postManyClubsForChamp(response, clubsList, championship) {
+    function updateChampWithClubsId(champId, clubsId) {
+      const listOfClubsId = R.map(R.prop('_id'), clubsId);
+      const updateQuery = {
+        '$set': {
+          clubs: listOfClubsId
+        }
+      };
+
+      return updateOne(champs, champId, updateQuery);
+    }
+    const champId = R.prop('_id', championship);
+    const queryChampId = R.pickAll(['_id'], championship);
+    const newClubs = R.map(R.assoc('champId', champId), clubsList);
+    const updateChampWithClubsIdC = R.curry(updateChampWithClubsId);
+
+    insert(clubs, newClubs, updateChampWithClubsIdC(queryChampId));
+
+    return respondToPOSTCall(response, championship);
   }
 
   const params = paramsForPOSTCall(['style', 'level', 'nbClubs'], request);
   const isRequestValid = validateRequest(postChampionshipSchema, params);
-
 
   return R.ifElse(
     R.equals(true),
@@ -105,7 +97,6 @@ function postOneChampionship(request, response) {
     () => badArguments(response, R.last(isRequestValid))
   )(R.head(isRequestValid));
 }
-
 
 // Create a new championship
 router.post('/', postOneChampionship);

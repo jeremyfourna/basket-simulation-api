@@ -14,29 +14,16 @@ function respondToGETCall(response, result) {
   )(R.isNil(result));
 }
 
-// respondToPOSTCall io object a -> io
-function respondToPOSTCall(response, result, callback = undefined) {
-  console.log(result, callback);
-
-  function cleanResult() {
+// respondToPOSTCall io object -> io
+function respondToPOSTCall(response, result) {
+  function cleanResult(result) {
     return { _id: R.prop('_id', result) };
-  }
-
-  function respondWithCallbackOrNot() {
-    return R.ifElse(
-      R.equals(true),
-      () => response.status(201).json(cleanResult()),
-      () => {
-        callback(result);
-        return response.status(201).json(cleanResult());
-      }
-    )(R.isNil(callback));
   }
 
   return R.ifElse(
     R.equals(true),
     () => response.sendStatus(502),
-    () => respondWithCallbackOrNot()
+    () => response.status(201).json(cleanResult(result))
   )(R.isNil(result));
 }
 
