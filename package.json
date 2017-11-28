@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "nyc mocha"
   },
   "dependencies": {
     "ajv": "^5.4.0",
@@ -23,6 +24,11 @@
     "serve-favicon": "~2.4.5"
   },
   "devDependencies": {
-    "eslint": "^4.11.0"
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "chai-json-schema": "^1.5.0",
+    "eslint": "^4.11.0",
+    "mocha": "^4.0.1",
+    "nyc": "^11.3.0"
   }
 }
