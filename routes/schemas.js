@@ -46,6 +46,23 @@ const postUserSchema = {
   required: ['email', 'password']
 };
 
+const postLoginSchema = {
+  title: 'Params to create get a token v1',
+  type: 'object',
+  properties: {
+    email: {
+      type: 'string',
+      format: 'email'
+    },
+    password: {
+      type: 'string',
+      minLength: 8,
+      maxLength: 64
+    }
+  },
+  required: ['email', 'password']
+};
+
 const getOneChampionshipSchema = {
   title: 'Params to retrieve a championship v1',
   type: 'object',
@@ -89,5 +106,6 @@ exports.getOneChampionshipSchema = getOneChampionshipSchema;
 exports.getOneClubSchema = getOneClubSchema;
 exports.getOneUserSchema = getOneUserSchema;
 exports.postChampionshipSchema = postChampionshipSchema;
+exports.postLoginSchema = postLoginSchema;
 exports.postUserSchema = postUserSchema;
 exports.validateRequest = R.curry(validateRequest);

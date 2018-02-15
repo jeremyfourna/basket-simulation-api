@@ -27,6 +27,15 @@ function respondToPOSTCall(response, result) {
   )(R.isNil(result));
 }
 
+// respondToPOSTLoginCall io object -> io
+function respondToPOSTLoginCall(token, response, result) {
+  return R.ifElse(
+    R.equals(true),
+    () => response.sendStatus(502),
+    () => response.status(201).json(token)
+  )(R.isNil(result));
+}
+
 // paramsForGETCall array object -> object
 function paramsForGETCall(paramsToRetrieve, request) {
   return paramsFromRequest('params', paramsToRetrieve, request);
@@ -47,3 +56,4 @@ exports.paramsForGETCall = R.curry(paramsForGETCall);
 exports.respondToGETCall = R.curry(respondToGETCall);
 exports.paramsForPOSTCall = R.curry(paramsForPOSTCall);
 exports.respondToPOSTCall = R.curry(respondToPOSTCall);
+exports.respondToPOSTLoginCall = R.curry(respondToPOSTLoginCall);

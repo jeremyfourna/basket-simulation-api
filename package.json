@@ -1,6 +1,6 @@
 {
   "name": "basket-simulation-api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "scripts": {
     "start": "node ./bin/www",
@@ -10,12 +10,14 @@
     "ajv": "^5.4.0",
     "basket-simulation-champ": "0.0.5",
     "basket-simulation-club": "0.0.5",
+    "basket-simulation-utils": "0.0.4",
     "body-parser": "~1.18.2",
     "bunyan": "^1.8.12",
     "compression": "^1.7.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "jsonwebtoken": "^8.1.1",
     "mongodb": "^2.2.33",
     "monk": "^6.0.5",
     "morgan": "~1.9.0",
